@@ -3,22 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from slugify import slugify
 from flask_mail import Mail, Message
-import os
-
+from config import Config
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '87c18504f18e2aa1b2b3698a95221240'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///travelblog.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object(Config)
 
-# Configuration for mail server (example using Gmail SMTP)
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)  
@@ -28,6 +18,7 @@ mail = Mail(app)
 class Users(db.Model):
     id = db.Column(db.Integer,  primary_key = True)    
     name = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(100))
     email = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(12), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
@@ -76,8 +67,8 @@ def contact():
             msg = Message(
             subject=subject+ ' from '+ name,
             reply_to=email,
-            sender=os.getenv('MAIL_USERNAME'),
-            recipients=[os.getenv('MAIL_DEFAULT_SENDER')],
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[app.config['MAIL_DEFAULT_SENDER']],
             body=message
             )
             mail.send(msg)
@@ -96,6 +87,11 @@ def contact():
 def blog():
     return render_template('blog-details.html')
 
+
+@app.route('/dashboard', methods=['GET'])
+def dashboard():
+    pass
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
