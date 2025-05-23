@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from slugify import slugify
 from flask_mail import Mail, Message
 from config import Config
+from auth import AuthManager
 
 app = Flask(__name__)
 
@@ -43,6 +44,7 @@ class Contacts(db.Model):
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())    
     
+auth = AuthManager(db, Users)
 
 @app.route('/')
 def index():
@@ -50,6 +52,7 @@ def index():
 
 
 @app.route('/category')
+@auth.login_required
 def category():
     return render_template('category.html')
 
@@ -91,6 +94,11 @@ def blog():
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     pass
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    return 'You are in the login page!'
+
     
 
 if __name__ == '__main__':
