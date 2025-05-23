@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from slugify import slugify
@@ -9,7 +9,6 @@ from auth import AuthManager
 app = Flask(__name__)
 
 app.config.from_object(Config)
-
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)  
@@ -93,11 +92,19 @@ def blog():
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
-    pass
+    return 'Welcome to Dashboard'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return 'You are in the login page!'
+    if request.method == 'POST':
+        name = request.form.get('username')
+        password = request.form.get('password')
+        if auth.authenticate(name, password):
+            return redirect(request.args.get('next') or url_for('dashboard'))
+        flash('Invalid credentials!', 'warning')
+        return redirect('/login')
+
+    return render_template('login.html')
 
     
 

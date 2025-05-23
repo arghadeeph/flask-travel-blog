@@ -12,7 +12,7 @@ class AuthManager:
         user = self.user.query.filter_by(email=username).first()
         # Checking if valid user
         if user and check_password_hash(user.password, password):
-            session['user_id']
+            session['user_id'] = user.id
             return True
         return False
     
