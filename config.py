@@ -18,3 +18,4 @@ class Config:
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
+    FILE_UPLOAD_PATH = 'static/uploads/'

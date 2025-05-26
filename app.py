@@ -5,6 +5,7 @@ from slugify import slugify
 from flask_mail import Mail, Message
 from config import Config
 from auth import AuthManager
+from utils import upload_image
 
 app = Flask(__name__)
 
@@ -96,9 +97,38 @@ def logout():
 
 
 @app.route('/my-posts', methods=['GET'])
+@auth.login_required
 def myaccount():
     return render_template('my-posts.html')
+
+@app.route('/add-post', methods=['GET', 'POST'])
+@auth.login_required
+def addpost():
+    if request.method == 'POST':
+
+        title = request.form.get('title')
+        slug = generate_unique_slug(title)
+        content = request.form.get('content')
+        image = request.files.get('image')
+        image_filename = upload_image(image, app.config['FILE_UPLOAD_PATH']+'blog/')
+
+        current_user_id = auth.get_current_user().id 
+        blog = Posts(user_id = current_user_id, title=title, slug=slug, content=content, image=image_filename)
+        db.session.add(blog)
+        db.session.commit()
+        flash('Blog created successfully!', 'success')
+        return redirect('/add-post')
+
+    return render_template('add-post.html')
     
+def generate_unique_slug(title):
+    base_slug = slugify(title)
+    slug = base_slug
+    counter = 2
+    while Posts.query.filter_by(slug=slug).first():
+        slug = f"{base_slug}-{counter}"
+        counter += 1
+    return slug    
 
 if __name__ == '__main__':
     app.run(debug=True)

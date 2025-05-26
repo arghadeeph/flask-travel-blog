@@ -17,6 +17,7 @@ class Posts(db.Model):
     title = db.Column(db.String(100), nullable=False)
     slug = db.Column(db.String(120), unique=True, nullable=True)
     content = db.Column(db.Text, nullable=False)
+    image = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
