@@ -22,6 +22,10 @@ auth = AuthManager(db, Users)
 def handle_auth():
     auth.check_session_timeout(app.permanent_session_lifetime.total_seconds())
 
+@app.context_processor
+def inject_user():
+    return dict(current_user=auth.get_current_user())
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -84,6 +88,16 @@ def login():
 
     return render_template('login.html')
 
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    auth.logout()
+    return redirect('/')
+
+
+@app.route('/my-posts', methods=['GET'])
+def myaccount():
+    return render_template('my-posts.html')
     
 
 if __name__ == '__main__':

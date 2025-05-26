@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Travel Blog - Home</title>
+  <title>Travel Blog - {% block title%} {% endblock %}</title>
 	<link rel="icon" href="{{ url_for('static', filename='img/Fevicon.png') }}" type="image/png">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='vendors/bootstrap/bootstrap.min.css') }}">
@@ -32,16 +32,34 @@
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
             <ul class="nav navbar-nav menu_nav justify-content-center">
-              <li class="nav-item active"><a class="nav-link" href="/">Home</a></li> 
-              <li class="nav-item"><a class="nav-link" href="/category">Category</a>
+              <li class="nav-item {% if request.endpoint == 'index' %}active{% endif %}"><a class="nav-link" href="/">Home</a></li> 
+              <li class="nav-item {% if request.endpoint == 'category' %}active{% endif %}"><a class="nav-link" href="/category">Category</a>
               <li class="nav-item submenu dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                   aria-expanded="false">Pages</a>
                 <ul class="dropdown-menu">
-                  <li class="nav-item"><a class="nav-link" href="/blog">Blog Details</a></li>
+                  <li class="nav-item {% if request.endpoint == 'blog' %}active{% endif %}"><a class="nav-link" href="/blog">Blog Details</a></li>
                 </ul>
               </li>
               <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav menu_nav justify-content-center">
+              {% if current_user %} 
+              <li class="nav-item submenu dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                  aria-expanded="false">Hi, {{ current_user.name }}</a>
+                <ul class="dropdown-menu">
+                   <li class="nav-item"><a class="nav-link" href="/my-posts">My Posts</a></li>
+                  <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+              </li>
+
+              {% else %}
+
+              <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+
+              {% endif %}
+
             </ul>
             <ul class="nav navbar-nav navbar-right navbar-social">
               <li><a href="#"><i class="ti-facebook"></i></a></li>
