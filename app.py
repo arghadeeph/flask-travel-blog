@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
-from flask_sqlalchemy import SQLAlchemy
+from models import db, Users, Posts, Contacts
 from flask_migrate import Migrate
 from slugify import slugify
 from flask_mail import Mail, Message
@@ -10,40 +10,17 @@ app = Flask(__name__)
 
 app.config.from_object(Config)
 
-db = SQLAlchemy(app)
+db.init_app(app)
 migrate = Migrate(app, db)  
 
-mail = Mail(app)
-
-class Users(db.Model):
-    id = db.Column(db.Integer,  primary_key = True)    
-    name = db.Column(db.String(100), nullable=False)
-    password = db.Column(db.String(100))
-    email = db.Column(db.String(100), nullable=False)
-    phone = db.Column(db.String(12), nullable=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-
-    # Relationship: one user has many posts
-    posts = db.relationship('Posts', backref='user', lazy=True)
-
-class Posts(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    title = db.Column(db.String(100), nullable=False)
-    slug = db.Column(db.String(120), unique=True, nullable=True)
-    content = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-
-class Contacts(db.Model):
-    id = db.Column(db.Integer,  primary_key = True)    
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
-    subject = db.Column(db.String(100), nullable=False)
-    message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())    
+mail = Mail(app)  
     
 auth = AuthManager(db, Users)
+
+# Middleware for session timeout
+@app.before_request
+def handle_auth():
+    auth.check_session_timeout(app.permanent_session_lifetime.total_seconds())
 
 @app.route('/')
 def index():
@@ -91,6 +68,7 @@ def blog():
 
 
 @app.route('/dashboard', methods=['GET'])
+@auth.login_required
 def dashboard():
     return 'Welcome to Dashboard'
 
