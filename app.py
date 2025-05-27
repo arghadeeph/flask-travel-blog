@@ -72,18 +72,13 @@ def blog():
     return render_template('blog-details.html')
 
 
-@app.route('/dashboard', methods=['GET'])
-@auth.login_required
-def dashboard():
-    return 'Welcome to Dashboard'
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         name = request.form.get('username')
         password = request.form.get('password')
         if auth.authenticate(name, password):
-            return redirect(request.args.get('next') or url_for('dashboard'))
+            return redirect(request.args.get('next') or url_for('myaccount'))
         flash('Invalid credentials!', 'warning')
         return redirect('/login')
 
@@ -99,7 +94,9 @@ def logout():
 @app.route('/my-posts', methods=['GET'])
 @auth.login_required
 def myaccount():
-    return render_template('my-posts.html')
+    current_user_id = auth.get_current_user().id
+    posts = Posts.query.filter_by(user_id = current_user_id).all()
+    return render_template('my-posts.html', posts=posts)
 
 @app.route('/add-post', methods=['GET', 'POST'])
 @auth.login_required

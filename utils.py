@@ -16,11 +16,12 @@ def upload_image(file, uploaded_folder):
     :param upload_folder: Path to upload folder, e.g., 'static/uploads/blogs'
     :return: filename if uploaded successfully, or None
     """
-
-    if file and allowed_file(file.name):
+  
+    if file and allowed_file(file.filename):
+        
         filename = secure_filename(file.filename)
         os.makedirs(uploaded_folder, exist_ok=True)
         path = os.path.join(uploaded_folder, filename)
-        file.save(filename)
+        file.save(path)
         return filename
     return None

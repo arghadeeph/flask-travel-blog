@@ -29,45 +29,32 @@
       <div class="row">
         <div class="col-lg-8">
           <div class="row">
-            <div class="col-md-6">
-              <div class="single-recent-blog-post card-view">
-                <div class="thumb">
-                  <img class="card-img rounded-0" src="{{ url_for('static', filename='img/blog/thumb/thumb-card1.png')}}" alt="">
-                  <ul class="thumb-info">
-                    <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-                    <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
-                  </ul>
-                </div>
-                <div class="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Fast cars and rickety bridges as 
-                        he grand tour returns</h3>
-                  </a>
-                  <p>Vel aliquam quis, nulla pede mi commodo no tristique nam hac luctus torquent velit felis lone commodo pellentesque</p>
-                  <a class="button" href="#">View <i class="ti-arrow-right"></i></a>
-                </div>
-              </div>
-            </div>
+           
+            {% if posts %}
+              {% for post in posts%}
 
-            <div class="col-md-6">
-              <div class="single-recent-blog-post card-view">
-                <div class="thumb">
-                  <img class="card-img rounded-0" src="{{ url_for('static', filename='img/blog/thumb/thumb-card1.png')}}" alt="">
-                  <ul class="thumb-info">
-                    <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-                    <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
-                  </ul>
+                <div class="col-md-6">
+                  <div class="single-recent-blog-post card-view">
+                    <div class="thumb">
+                      {% if post.image %}
+                        <img class="card-img rounded-0" src="{{ url_for('static', filename='uploads/blog/' + post.image)}}" alt="">
+                      {% endif%}
+                      <ul class="thumb-info">
+                        <li><a href="#"><i class="ti-user"></i>Admin</a></li>
+                        <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
+                      </ul>
+                    </div>
+                    <div class="details mt-20">
+                      <a href="/blog/{{ post.slug }}">
+                        <h3>{{ post.title }}</h3>
+                      </a>
+                      <p>Vel aliquam quis, nulla pede mi commodo no tristique nam hac luctus torquent velit felis lone commodo pellentesque</p>
+                      <a class="button" href="/blog/{{ post.slug }}">View <i class="ti-arrow-right"></i></a>
+                    </div>
+                  </div>
                 </div>
-                <div class="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Fast cars and rickety bridges as 
-                        he grand tour returns</h3>
-                  </a>
-                  <p>Vel aliquam quis, nulla pede mi commodo no tristique nam hac luctus torquent velit felis lone commodo pellentesque</p>
-                  <a class="button" href="#">View <i class="ti-arrow-right"></i></a>
-                </div>
-              </div>
-            </div>
+              {% endfor %}
+            {% endif%}    
             
           </div>
 
