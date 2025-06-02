@@ -6,6 +6,7 @@ from flask_mail import Mail, Message
 from config import Config
 from auth import AuthManager
 from utils import upload_image
+from math import ceil
 
 app = Flask(__name__)
 
@@ -33,7 +34,6 @@ def index():
 
 
 @app.route('/category')
-@auth.login_required
 def category():
     return render_template('category.html')
 
@@ -93,10 +93,23 @@ def logout():
 
 @app.route('/my-posts', methods=['GET'])
 @auth.login_required
-def myaccount():
+def myposts():
+
+    page = request.args.get('page', 1, type=int)
+    perPage = 4
+
     current_user_id = auth.get_current_user().id
-    posts = Posts.query.filter_by(user_id = current_user_id).all()
-    return render_template('my-posts.html', posts=posts)
+    countTotal = Posts.query.filter_by(user_id = current_user_id).count()
+    offset = ( page - 1 ) * perPage
+    limit = perPage
+    totalPage = ceil(countTotal/perPage)
+
+    posts = Posts.query.filter_by(user_id = current_user_id)\
+                        .order_by(Posts.created_at.desc())\
+                        .offset(offset)\
+                        .limit(limit)\
+                        .all()
+    return render_template('my-posts.html', posts=posts, page = page, total_pages = totalPage)
 
 @app.route('/add-post', methods=['GET', 'POST'])
 @auth.login_required
