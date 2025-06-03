@@ -7,6 +7,8 @@ from config import Config
 from auth import AuthManager
 from utils import upload_image
 from math import ceil
+from bs4 import BeautifulSoup
+
 
 app = Flask(__name__)
 
@@ -30,7 +32,12 @@ def inject_user():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+
+    posts = Posts.query.order_by(Posts.created_at.desc()).all()
+    for post in posts:
+        post.clean_content = strip_html(post.content)
+
+    return render_template('index.html', posts=posts)
 
 
 @app.route('/category')
@@ -67,8 +74,8 @@ def contact():
         
     return render_template('contact.html')
 
-@app.route('/blog')
-def blog():
+@app.route('/blog/<string:slug>')
+def blog(slug):
     return render_template('blog-details.html')
 
 
@@ -78,7 +85,7 @@ def login():
         name = request.form.get('username')
         password = request.form.get('password')
         if auth.authenticate(name, password):
-            return redirect(request.args.get('next') or url_for('myaccount'))
+            return redirect(request.args.get('next') or url_for('myposts'))
         flash('Invalid credentials!', 'warning')
         return redirect('/login')
 
@@ -109,6 +116,9 @@ def myposts():
                         .offset(offset)\
                         .limit(limit)\
                         .all()
+    for post in posts:
+        post.clean_content = strip_html(post.content)
+
     return render_template('my-posts.html', posts=posts, page = page, total_pages = totalPage)
 
 @app.route('/add-post', methods=['GET', 'POST'])
@@ -131,6 +141,7 @@ def addpost():
 
     return render_template('add-post.html')
     
+# -------- Reusable Functions ---------    
 def generate_unique_slug(title):
     base_slug = slugify(title)
     slug = base_slug
@@ -138,7 +149,10 @@ def generate_unique_slug(title):
     while Posts.query.filter_by(slug=slug).first():
         slug = f"{base_slug}-{counter}"
         counter += 1
-    return slug    
+    return slug   
+ 
+def strip_html(html):
+    return BeautifulSoup(html, "html.parser").get_text()
 
 if __name__ == '__main__':
     app.run(debug=True)

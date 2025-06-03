@@ -48,7 +48,7 @@
                       <a href="/blog/{{ post.slug }}">
                         <h3>{{ post.title }}</h3>
                       </a>
-                      <p>Vel aliquam quis, nulla pede mi commodo no tristique nam hac luctus torquent velit felis lone commodo pellentesque</p>
+                      <p>{{post.clean_content[:100]}}...</p>
                       <a class="button" href="/blog/{{ post.slug }}">View <i class="ti-arrow-right"></i></a>
                     </div>
                   </div>
