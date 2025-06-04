@@ -84,7 +84,12 @@ def contact():
 
 @app.route('/blog/<string:slug>')
 def blog(slug):
-    return render_template('blog-details.html')
+    post = Posts.query.filter_by(slug = slug).first()
+
+    if(post):
+        return render_template('blog-details.html', post=post)
+    else:
+        return redirect('/')
 
 
 @app.route('/login', methods=['GET', 'POST'])
