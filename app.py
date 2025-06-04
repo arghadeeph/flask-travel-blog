@@ -32,12 +32,20 @@ def inject_user():
 
 @app.route('/')
 def index():
+    page = request.args.get('page', 1, type=int)
+    perPagePost = 4
 
-    posts = Posts.query.order_by(Posts.created_at.desc()).all()
+    totalPosts = Posts.query.count()
+    totalPages = ceil(totalPosts/perPagePost)
+
+    limit = perPagePost
+    offset = (page - 1 ) * perPagePost
+
+    posts = Posts.query.order_by(Posts.created_at.desc()).limit(limit).offset(offset).all()
     for post in posts:
         post.clean_content = strip_html(post.content)
 
-    return render_template('index.html', posts=posts)
+    return render_template('index.html', posts=posts, page=page, totalPages=totalPages)
 
 
 @app.route('/category')
