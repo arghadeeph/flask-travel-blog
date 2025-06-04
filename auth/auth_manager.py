@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import redirect, request, url_for, session
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
 class AuthManager:
@@ -9,13 +9,16 @@ class AuthManager:
         self.user = user_model
         self.login_url = login_url
 
+    def login_user(self, user):
+        session.permanent = True
+        session['user_id'] = user.id
+        session['last_active'] = datetime.now().timestamp()    
+
     def authenticate(self, username, password):
         user = self.user.query.filter_by(email=username).first()
         # Checking if valid user
         if user and check_password_hash(user.password, password):
-            session.permanent = True
-            session['user_id'] = user.id
-            session['last_active'] = datetime.now().timestamp()
+            self.login_user(user)
             return True
         return False
     
@@ -48,4 +51,5 @@ class AuthManager:
             else:
                 session['last_active'] = now
         
-    
+    def hash_password(self, password):
+        return generate_password_hash(password)

@@ -91,6 +91,40 @@ def blog(slug):
     else:
         return redirect('/')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+
+    if request.method == 'POST':
+        name = request.form.get('name').strip()
+        phone = request.form.get('phone').strip()
+        email = request.form.get('email').strip()
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('conf_password', '')
+
+        if not name or not phone or not email or not password or not confirm_password:
+            flash('All fields are required!', 'danger')
+            return render_template('register.html')
+        
+        if password != confirm_password:
+            flash('Password and confirm password do not match!', 'danger')
+            return render_template('register.html')
+        
+        if Users.query.filter_by(email=email).first():
+            flash('Email already registered!', 'danger')
+            return render_template('register.html')
+        
+        hasPasswprd = auth.hash_password(password)
+
+        newUser = Users(name=name, email=email, phone=phone, password=hasPasswprd)
+        db.session.add(newUser)
+        db.session.commit()
+
+        auth.login_user(newUser)
+        flash('Registration successful!', 'success')
+        return redirect(url_for('myposts'))
+    
+    
+    return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

@@ -1,5 +1,7 @@
 {% extends "base.html" %} 
 
+{% block title %} Login {% endblock %}
+
   {% block content%}
 
 
@@ -21,26 +23,35 @@
         {% endwith %}
 
         <form class="form-contact contact_form" action="/login" method="post" id="loginForm" novalidate="novalidate">
-          <h3 class="mb-4 text-center">Login</h3>
-          <div class="form-group">
-            <label for="username">Email</label>
-            <input class="form-control" name="username" id="username" type="text" placeholder="Enter email" required>
+        <h3 class="mb-4 text-center">Login</h3>
+
+        <div class="form-group">
+          <label for="username">Email</label>
+          <input class="form-control" name="username" id="username" type="text" placeholder="Enter email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input class="form-control" name="password" id="password" type="password" placeholder="Enter password" required>
+        </div>
+
+        <div class="form-group d-flex justify-content-between align-items-center">
+          <div>
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember"> Remember me</label>
           </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input class="form-control" name="password" id="password" type="password" placeholder="Enter password" required>
+
+          <!-- Create Account Link -->
+          <div>
+            <a href="/register" class="text-primary" style="font-size: 0.9rem;">Create an account</a>
           </div>
-          <div class="form-group d-flex justify-content-between align-items-center">
-            <div>
-              <input type="checkbox" id="remember" name="remember">
-              <label for="remember"> Remember me</label>
-            </div>
-          
-          </div>
-          <div class="form-group text-center mt-3">
-            <button type="submit" class="button button--active button-contactForm w-100">Login</button>
-          </div>
-        </form>
+        </div>
+
+        <div class="form-group text-center mt-3">
+          <button type="submit" class="button button--active button-contactForm w-100">Login</button>
+        </div>
+      </form>
+              
       </div>
     </div>
 

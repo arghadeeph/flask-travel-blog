@@ -1,0 +1,73 @@
+{% extends "base.html" %} 
+
+{% block title %} Register New User {% endblock %}
+
+  {% block content%}
+
+
+  <!-- ================ Login section start ================= -->
+  <section class="section-margin--small section-margin">
+  <div class="container">
+
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form class="form-contact" action="/register" method="post" id="registerForm" autocomplete="off" novalidate="novalidate">
+        <h3 class="mb-4 text-center">Register New User</h3>
+        
+        <div class="form-group">
+          <label for="username">Name</label>
+          <input class="form-control" name="name" id="name" type="text" value="{{request.form.get('name', '')}}" placeholder="Enter Name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="username">Phone</label>
+          <input class="form-control" name="phone" id="phone" type="text" value="{{request.form.get('phone', '')}}" placeholder="Enter Name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="username">Email</label>
+          <input class="form-control" name="email" id="email" type="text" value="{{request.form.get('email', '')}}" placeholder="Enter email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input class="form-control" name="password" id="password" type="password" placeholder="Enter password" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Confirm Password</label>
+          <input class="form-control" name="conf_password" id="conf_password" type="password" placeholder="Confirm password" required>
+        </div>
+
+        <div class="form-group d-flex justify-content-end align-items-center">
+          <span class="me-2">Already registered? </span>
+          <a href="/login" class="text-primary" style="font-size: 0.9rem;"> Login Here</a>
+        </div>
+
+        <div class="form-group text-center mt-3">
+          <button type="submit" class="button button--active button-contactForm w-100">Register</button>
+        </div>
+      </form>
+              
+      </div>
+    </div>
+
+  </div>
+</section>
+	<!-- ================ Login section end ================= -->
+
+  
+
+
+  {% endblock %}

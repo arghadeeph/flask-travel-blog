@@ -9,6 +9,7 @@ class Users(db.Model):
     email = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(12), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    
     posts = db.relationship('Posts', backref='user', lazy=True)
 
 class Posts(db.Model):
