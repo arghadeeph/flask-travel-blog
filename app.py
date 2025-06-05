@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
-from models import db, Users, Posts, Contacts
+from models import db, Users, Posts, Contacts, PostLikes
 from flask_migrate import Migrate
 from slugify import slugify
 from flask_mail import Mail, Message
@@ -195,6 +195,20 @@ def addpost():
         return redirect('/add-post')
 
     return render_template('add-post.html')
+
+@app.route('/like-post/<int:post_id>', methods=['GET', 'POST'])
+@auth.login_required
+def like_post(post_id):
+    if request.method == "POST":
+        user_id = auth.get_current_user().id
+
+        new_like = PostLikes(user_id=user_id, post_id=post_id)
+        db.session.add(new_like)
+        db.session.commit()
+
+        return redirect(request.referrer)
+
+    
     
 # -------- Reusable Functions ---------    
 def generate_unique_slug(title):

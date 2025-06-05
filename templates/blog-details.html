@@ -51,8 +51,8 @@
                 </div>
                 {{post.content|safe}}
                <div class="news_d_footer flex-column flex-sm-row">
-                {% if current_user %}
-                 <a href="#like"><span class="align-middle mr-2"><i class="ti-heart"></i></span></a>
+                 {% if current_user %}
+                 <form action="{{url_for('like_post', post_id=post.id)}}" method="post"><button type="submit" style="all: unset; cursor: pointer;"><span class="align-middle mr-2"><i class="ti-heart"></i></span></button></form>
                 {%else%} 
                   <a href="{{ url_for('login', next=url_for('blog', slug=post.slug)) }}"><span class="align-middle mr-2"><i class="ti-heart"></i></span></a>
                 {%endif%}

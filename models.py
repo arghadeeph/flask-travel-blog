@@ -29,3 +29,9 @@ class Contacts(db.Model):
     subject = db.Column(db.String(100), nullable=False)
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+class PostLikes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) 
+    post_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) 
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
