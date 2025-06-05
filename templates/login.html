@@ -41,9 +41,11 @@
             <label for="remember"> Remember me</label>
           </div>
 
+          <input type="hidden" name="next" value="{{next}}">
+
           <!-- Create Account Link -->
           <div>
-            <a href="/register" class="text-primary" style="font-size: 0.9rem;">Create an account</a>
+            <a href="{{url_for('register', next=next)}}" class="text-primary" style="font-size: 0.9rem;">Create an account</a>
           </div>
         </div>
 

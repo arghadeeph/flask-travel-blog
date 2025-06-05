@@ -54,7 +54,7 @@
                 {% if current_user %}
                  <a href="#like"><span class="align-middle mr-2"><i class="ti-heart"></i></span></a>
                 {%else%} 
-                  <a href="/login"><span class="align-middle mr-2"><i class="ti-heart"></i></span></a>
+                  <a href="{{ url_for('login', next=url_for('blog', slug=post.slug)) }}"><span class="align-middle mr-2"><i class="ti-heart"></i></span></a>
                 {%endif%}
                  Lily and 4 people like this
                  <a class="justify-content-sm-center ml-sm-auto mt-sm-0 mt-2" href="#"><span class="align-middle mr-2"><i class="ti-themify-favicon"></i></span>06 Comments</a>

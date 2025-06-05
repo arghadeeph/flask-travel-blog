@@ -93,6 +93,7 @@ def blog(slug):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    nextPage = request.args.get('next')
 
     if request.method == 'POST':
         name = request.form.get('name').strip()
@@ -121,22 +122,29 @@ def register():
 
         auth.login_user(newUser)
         flash('Registration successful!', 'success')
-        return redirect(url_for('myposts'))
+        next_page = request.form.get('next')
+        return redirect(next_page or url_for('myposts'))
     
     
-    return render_template('register.html')
+    return render_template('register.html', next = nextPage)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    nextPage = request.args.get('next')
     if request.method == 'POST':
+
+        for key, value in request.form.items():
+            print(f"{key}: {value}")
+        
         name = request.form.get('username')
         password = request.form.get('password')
         if auth.authenticate(name, password):
-            return redirect(request.args.get('next') or url_for('myposts'))
+            next_page = request.form.get('next')
+            return redirect(next_page or url_for('myposts'))
         flash('Invalid credentials!', 'warning')
         return redirect('/login')
 
-    return render_template('login.html')
+    return render_template('login.html', next = nextPage)
 
 
 @app.route('/logout', methods=['GET'])
