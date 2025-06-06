@@ -86,8 +86,14 @@ def contact():
 def blog(slug):
     post = Posts.query.filter_by(slug = slug).first()
 
+    liked = False
+    if auth.is_authenticated():
+        user_id = auth.get_current_user().id
+        liked = PostLikes.query.filter_by(post_id=post.id, user_id=user_id).first() is not None
+    
+
     if(post):
-        return render_template('blog-details.html', post=post)
+        return render_template('blog-details.html', post=post, liked=liked)
     else:
         return redirect('/')
 
@@ -130,11 +136,8 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    nextPage = request.args.get('next')
+    nextPage = request.args.get('next') or ''
     if request.method == 'POST':
-
-        for key, value in request.form.items():
-            print(f"{key}: {value}")
         
         name = request.form.get('username')
         password = request.form.get('password')
@@ -202,9 +205,16 @@ def like_post(post_id):
     if request.method == "POST":
         user_id = auth.get_current_user().id
 
-        new_like = PostLikes(user_id=user_id, post_id=post_id)
-        db.session.add(new_like)
-        db.session.commit()
+        like = PostLikes.query.filter_by(user_id=user_id, post_id=post_id).first()
+
+        if like:
+            print(f'user id {user_id} post id {post_id} like {like}')
+            db.session.delete(like)
+        else:
+
+            new_like = PostLikes(user_id=user_id, post_id=post_id)
+            db.session.add(new_like)
+        db.session.commit()    
 
         return redirect(request.referrer)
 

@@ -3,6 +3,17 @@
 {% block title %} {{post.title}} {% endblock %}
 
   {% block content%}
+
+  <style>
+    .like-btn .ti-heart {
+  color: gray; /* default */
+  transition: color 0.3s ease;
+}
+
+.like-btn.active .ti-heart {
+  color: red;
+}
+  </style>
   <!--================ Hero sm Banner start =================-->      
   <section class="mb-30px">
     <div class="container">
@@ -52,7 +63,7 @@
                 {{post.content|safe}}
                <div class="news_d_footer flex-column flex-sm-row">
                  {% if current_user %}
-                 <form action="{{url_for('like_post', post_id=post.id)}}" method="post"><button type="submit" style="all: unset; cursor: pointer;"><span class="align-middle mr-2"><i class="ti-heart"></i></span></button></form>
+                 <form action="{{url_for('like_post', post_id=post.id)}}" method="post"><button class="like-btn {{ 'active' if liked else '' }}" type="submit" style="all: unset; cursor: pointer;"><span class="align-middle mr-2 "><i class="ti-heart"></i></span></button></form>
                 {%else%} 
                   <a href="{{ url_for('login', next=url_for('blog', slug=post.slug)) }}"><span class="align-middle mr-2"><i class="ti-heart"></i></span></a>
                 {%endif%}
