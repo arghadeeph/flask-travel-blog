@@ -91,9 +91,10 @@ def blog(slug):
         user_id = auth.get_current_user().id
         liked = PostLikes.query.filter_by(post_id=post.id, user_id=user_id).first() is not None
     
+    totalLike = PostLikes.query.filter_by(post_id=post.id).count()
 
     if(post):
-        return render_template('blog-details.html', post=post, liked=liked)
+        return render_template('blog-details.html', post=post, liked=liked, totalLike=totalLike)
     else:
         return redirect('/')
 

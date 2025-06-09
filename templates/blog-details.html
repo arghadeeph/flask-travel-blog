@@ -67,7 +67,9 @@
                 {%else%} 
                   <a href="{{ url_for('login', next=url_for('blog', slug=post.slug)) }}"><span class="align-middle mr-2"><i class="ti-heart"></i></span></a>
                 {%endif%}
-                 Lily and 4 people like this
+                {% if(totalLike) %} 
+                {{totalLike}} people like this 
+                {%endif %}
                  <a class="justify-content-sm-center ml-sm-auto mt-sm-0 mt-2" href="#"><span class="align-middle mr-2"><i class="ti-themify-favicon"></i></span>06 Comments</a>
                  <div class="news_socail ml-sm-auto mt-sm-0 mt-2">
                   <a href="#"><i class="fab fa-facebook-f"></i></a>
