@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
-from models import db, Users, Posts, Contacts, PostLikes
+from models import db, Users, Posts, Contacts, PostLikes, Comments
 from flask_migrate import Migrate
 from slugify import slugify
 from flask_mail import Mail, Message
@@ -84,17 +84,19 @@ def contact():
 
 @app.route('/blog/<string:slug>')
 def blog(slug):
-    post = Posts.query.filter_by(slug = slug).first()
-
+    post = Posts.query.filter_by(slug = slug).first_or_404()
     liked = False
+
+    #Check if the current user has liked the post
     if auth.is_authenticated():
         user_id = auth.get_current_user().id
         liked = PostLikes.query.filter_by(post_id=post.id, user_id=user_id).first() is not None
     
     totalLike = PostLikes.query.filter_by(post_id=post.id).count()
+    totalComments = Comments.query.filter_by(post_id=post.id).count()
 
     if(post):
-        return render_template('blog-details.html', post=post, liked=liked, totalLike=totalLike)
+        return render_template('blog-details.html', post=post, liked=liked, totalLike=totalLike, totalComments=totalComments)
     else:
         return redirect('/')
 
@@ -137,7 +139,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    nextPage = request.args.get('next') or ''
+    
     if request.method == 'POST':
         
         name = request.form.get('username')
@@ -147,7 +149,9 @@ def login():
             return redirect(next_page or url_for('myposts'))
         flash('Invalid credentials!', 'warning')
         return redirect('/login')
-
+    
+    nextPage = request.args.get('next') or ''
+    print(nextPage)
     return render_template('login.html', next = nextPage)
 
 
@@ -200,7 +204,7 @@ def addpost():
 
     return render_template('add-post.html')
 
-@app.route('/like-post/<int:post_id>', methods=['GET', 'POST'])
+@app.route('/like-post/<int:post_id>', methods=['POST'])
 @auth.login_required
 def like_post(post_id):
     if request.method == "POST":
@@ -218,8 +222,24 @@ def like_post(post_id):
         db.session.commit()    
 
         return redirect(request.referrer)
-
     
+@app.route('/add-comment/<int:post_id>', methods=['Post'])   
+@auth.login_required
+def add_comment(post_id):
+    if request.method == 'POST':
+        message = request.form.get('message')
+        current_user_id = auth.get_current_user().id 
+
+        newPostComment = Comments(comment = message, user_id = current_user_id, post_id=post_id)
+        db.session.add(newPostComment)
+        db.session.commit()
+
+    post = Posts.query.get(post_id)    
+    next_page = request.args.get('next') or url_for('blog', slug=post.slug)    
+
+    return redirect(next_page)    
+
+
     
 # -------- Reusable Functions ---------    
 def generate_unique_slug(title):

@@ -30,11 +30,12 @@ class AuthManager:
             return self.user.query.get(session['user_id'])
         return None
     
-    def login_required(self, func):
+    def login_required(self, func):       
         @wraps(func)
         def wrapper(*args, **kwargs):
             if not self.is_authenticated():
-                return redirect(url_for(self.login_url, next=request.url))
+                next_url = request.referrer or url_for('index')
+                return redirect(url_for(self.login_url, next=next_url))
             return func(*args, **kwargs)
         return wrapper
     
