@@ -40,8 +40,8 @@
                         <img class="card-img rounded-0" src="{{ url_for('static', filename='uploads/blog/' + post.image)}}" alt="">
                       {% endif%}
                       <ul class="thumb-info">
-                        <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-                        <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
+                        <li><a href="#"><i class="ti-heart"></i>{{post.likes|length}} Likes</a></li>
+                        <li><a href="#"><i class="ti-themify-favicon"></i>{{post.comments|length}} Comments</a></li>
                       </ul>
                     </div>
                     <div class="details mt-20">

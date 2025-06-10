@@ -225,9 +225,10 @@ def like_post(post_id):
 def add_comment(post_id):
     if request.method == 'POST':
         message = request.form.get('message')
+        parent_id = request.form.get('comment_id') or ''
         current_user_id = auth.get_current_user().id 
 
-        newPostComment = Comments(comment = message, user_id = current_user_id, post_id=post_id)
+        newPostComment = Comments(comment = message, user_id = current_user_id, post_id=post_id, parent_id=parent_id)
         db.session.add(newPostComment)
         db.session.commit()
 

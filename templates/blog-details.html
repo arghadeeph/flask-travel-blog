@@ -100,45 +100,55 @@
 
               {% if(post.comments)%}
                 {% for comment in post.comments%}  
-                <div class="comment-list">
-                    <div class="single-comment justify-content-between d-flex">
-                        <div class="user justify-content-between d-flex">
-                          
-                            <div class="desc">
-                                <h5><a href="javascript:void(0)">{{comment.user.name}}</a></h5>
-                                <p class="date">{{comment.created_at.strftime('%d %b, %y %I:%M %p')}} </p>
-                                <p class="comment">
-                                    {{comment.comment}}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="reply-btn">
-                                <a href="" class="btn-reply text-uppercase">reply</a> 
-                        </div>
-                    </div>
-                </div>	
-
-                  {% if(post.comments.replies)%}
-                   {% for replies in post.comments.replies %}
-                   <div class="comment-list left-padding">
+                  {% if not comment.parent_id %}
+                  <div class="comment-list">
                       <div class="single-comment justify-content-between d-flex">
                           <div class="user justify-content-between d-flex">
-                              
+                            
                               <div class="desc">
-                                  <h5><a href="javascript:void(0)">{{replies.name}}</a></h5>
-                                  <p class="date">{{replies.created_at.strftime('%d %b, %y %I:%M %p')}} </p>
+                                  <h5><a href="javascript:void(0)">{{comment.user.name}}</a></h5>
+                                  <p class="date">{{comment.created_at.strftime('%d %b, %y %I:%M %p')}} </p>
                                   <p class="comment">
-                                     {{replies.comment}}
+                                      {{comment.comment}}
                                   </p>
                               </div>
                           </div>
                           <div class="reply-btn">
-                                  <a href="" class="btn-reply text-uppercase">reply</a> 
+                                  <a href="" class="btn-reply text-uppercase">Reply</a> 
                           </div>
                       </div>
-                   </div>
-                    {% endfor %}
-                  {%endif%}
+                      <div class="comment-form">
+                        <h4>Add a Reply</h4>
+                        <form name="comment-form" action="{{url_for('add_comment', post_id=post.id)}}" method="post">
+                            <div class="form-group">
+                              <input type="hidden" name="comment_id" value="{{comment.id}}">
+                                <textarea class="form-control mb-10" rows="5" name="message" placeholder="Comment" required=""></textarea>
+                            </div>
+                            <button type="submit" class="button submit_btn">Post Reply</button>	
+                        </form>
+                    </div>
+                  
+
+                    {% if(comment.replies)%}
+                    {% for replies in comment.replies %}
+                    <div class="comment-list left-padding">
+                        <div class="single-comment justify-content-between d-flex">
+                            <div class="user justify-content-between d-flex">
+                                
+                                <div class="desc">
+                                    <h5><a href="javascript:void(0)">{{replies.user.name}}</a></h5>
+                                    <p class="date">{{replies.created_at.strftime('%d %b, %y %I:%M %p')}} </p>
+                                    <p class="comment">
+                                      {{replies.comment}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                      {% endfor %}
+                    {%endif%}
+                  </div>
+                  {% endif %}  
                 {%endfor%}
               {%endif%}
                                                            				
