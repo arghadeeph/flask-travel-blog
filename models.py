@@ -22,6 +22,9 @@ class Posts(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+    comments = db.relationship('Comments', backref='comments', lazy=True)
+    likes = db.relationship('PostLikes', backref='likes', lazy=True)
+
 class Contacts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -45,6 +48,7 @@ class Comments(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     replies = db.relationship('Comments', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
+    user = db.relationship('Users', backref='user', lazy=True)
 
     
 

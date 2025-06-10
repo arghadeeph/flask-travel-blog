@@ -100,9 +100,9 @@
               <div class="thumb">
                 <img class="img-fluid" src="{{ url_for('static', filename='uploads/blog/'+ post.image) }}" alt="" style="min-width: 450px;">
                 <ul class="thumb-info">
-                  <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-                  <li><a href="#"><i class="ti-notepad"></i>January 12,2019</a></li>
-                  <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
+                  <li><a href="#"><i class="ti-user"></i>{{post.user.name.split(' ')[0]}}</a></li>
+                  <li><a href="#"><i class="ti-notepad"></i>{{post.created_at.strftime('%d %B, %Y')}}</a></li>
+                  <li><a href="#"><i class="ti-themify-favicon"></i>{{post.comments|length}} Comments</a></li>
                 </ul>
               </div>
               <div class="details mt-20">
