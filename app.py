@@ -201,6 +201,27 @@ def addpost():
 
     return render_template('add-post.html')
 
+@app.route('/post/edit/<int:post_id>', methods=['GET', 'POST'])
+@auth.login_required
+def edit_post(post_id):
+    post = Posts.query.get_or_404(post_id)
+    if request.method == 'POST':
+        post.title = request.form.get('title')
+        post.content = request.form.get('content') 
+        
+        new_image = request.files.get('image') 
+        if new_image:
+            new_filename = upload_image(new_image, app.config['FILE_UPLOAD_PATH']+'blog/', post.image)
+            
+            if new_filename:
+                post.image = new_filename
+
+        db.session.commit()
+        flash('Blog updated successfully!', 'success')
+    
+    return render_template('edit-post.html', post=post)
+
+
 @app.route('/like-post/<int:post_id>', methods=['POST'])
 @auth.login_required
 def like_post(post_id):
